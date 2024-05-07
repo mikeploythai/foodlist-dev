@@ -1,2 +1,52 @@
 .root {
+  flex: 1;
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+.sidebar,
+.currentList {
+  flex: 1;
+  padding: 2rem 2rem 0;
+}
+
+.actions {
+  position: sticky;
+  top: -2rem;
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 2rem;
+  background: linear-gradient(white 50%, transparent);
+}
+
+.sidebar nav {
+  display: grid;
+  padding: 2rem 0;
+}
+
+.currentListContainer {
+  max-width: 64rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media only screen and (min-width: 48rem) {
+  .hidden {
+    display: block;
+  }
+
+  .sidebar,
+  .currentList {
+    height: 100vh;
+    overflow-y: scroll;
+  }
+
+  .sidebar {
+    max-width: 24rem;
+    width: 100%;
+    border-right: 1px solid;
+  }
 }
