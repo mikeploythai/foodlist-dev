@@ -1,0 +1,91 @@
+export const tempLists = [
+  {
+    id: "list-1",
+    name: "List 1",
+    note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel labore, dolores iste in sunt architecto incidunt iusto quasi magnam id. Nisi nostrum eum odio dolores delectus tempore quod voluptas rerum.",
+  },
+  {
+    id: "list-2",
+    name: "List 2",
+    note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel labore, dolores iste in sunt architecto incidunt iusto quasi magnam id. Nisi nostrum eum odio dolores delectus tempore quod voluptas rerum.",
+  },
+  {
+    id: "list-3",
+    name: "List 3",
+  },
+];
+
+export const tempFoods = [
+  {
+    id: "food-1",
+    list_id: "list-1",
+    name: "Apples",
+    quantity: 3,
+    price: 1.29,
+    price_unit: "per pound",
+    market: "Trader Joe's",
+    expires_at: "2024-06-21",
+  },
+  {
+    id: "food-2",
+    list_id: "list-1",
+    name: "Pears",
+    quantity: 3,
+  },
+  {
+    id: "food-3",
+    list_id: "list-1",
+    name: "Chips",
+    quantity: 2,
+    price: 3.99,
+    price_unit: "each",
+  },
+  {
+    id: "food-4",
+    list_id: "list-2",
+    name: "Mangoes",
+    quantity: 3,
+    price: 1.29,
+    price_unit: "per pound",
+    market: "Trader Joe's",
+    expires_at: "2024-04-21",
+  },
+  {
+    id: "food-5",
+    list_id: "list-2",
+    name: "Bread",
+    quantity: 3,
+  },
+  {
+    id: "food-6",
+    list_id: "list-2",
+    name: "Pickles",
+    quantity: 2,
+    price: 3.99,
+    price_unit: "each",
+  },
+  {
+    id: "food-7",
+    list_id: "list-3",
+    name: "Blueberries",
+    quantity: 3,
+    price: 1.29,
+    price_unit: "each",
+    market: "Trader Joe's",
+    expires_at: "2025-06-21",
+  },
+  {
+    id: "food-8",
+    list_id: "list-3",
+    name: "Pears",
+    quantity: 3,
+  },
+  {
+    id: "food-9",
+    list_id: "list-3",
+    name: "Milk",
+    quantity: 2,
+    price: 3.99,
+    price_unit: "per ounce",
+  },
+];
