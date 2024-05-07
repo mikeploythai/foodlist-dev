@@ -1,4 +1,17 @@
 :root {
+  --black: #171717;
+  --white: #fafafa;
+  --gray: #404040;
+  --orange: #ea580c;
+
+  --white-rgb: 250 250 250;
+  --gray-rgb: 64 64 64;
+  --orange-rgb: 234 88 12;
+
+  --transparent-gray: rgba(var(--gray-rgb) / 20%);
+
+  --rounded: 9999px;
+  --ease: 500ms ease;
 }
 
 * {
@@ -8,12 +21,15 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  scrollbar-color: var(--gray) var(--transparent-gray);
 }
 
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--black);
+  color: var(--white);
 }
 
 a {
@@ -28,9 +44,17 @@ h2 {
   text-wrap: balance;
 }
 
+p {
+  text-wrap: pretty;
+}
+
 hgroup {
   display: grid;
   gap: 0.5rem;
-  max-width: 40rem;
+  max-width: 48rem;
   width: 100%;
+}
+
+ul {
+  list-style: none;
 }

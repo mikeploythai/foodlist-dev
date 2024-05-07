@@ -1,0 +1,53 @@
+.primaryBtn {
+  --ease: 150ms ease;
+
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--rounded);
+  font-weight: 500;
+  background-color: var(--orange);
+  color: var(--white);
+  cursor: pointer;
+  transition: background-color var(--ease), opacity var(--ease);
+}
+
+.primaryBtn:focus-visible {
+  outline: 2px solid var(--white);
+}
+
+.secondaryBtn {
+  composes: primaryBtn;
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.secondaryBtn:focus-visible {
+  outline: 2px solid var(--orange);
+}
+
+.ghostBtn {
+  composes: primaryBtn;
+  background-color: transparent;
+}
+
+.outlineBtn {
+  composes: ghostBtn;
+  border: 1px solid var(--gray);
+}
+
+@media (hover: hover) {
+  .primaryBtn:hover {
+    background-color: rgba(var(--orange-rgb) / 80%);
+  }
+
+  .secondaryBtn:hover {
+    background-color: rgba(var(--white-rgb) / 80%);
+  }
+
+  .ghostBtn:hover {
+    background-color: var(--transparent-gray);
+  }
+}
