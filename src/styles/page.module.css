@@ -39,6 +39,10 @@
   justify-content: center;
 }
 
+.sidebar h2 {
+  font-size: 2.027rem;
+}
+
 .sidebar nav {
   display: grid;
   padding: 2rem 0;

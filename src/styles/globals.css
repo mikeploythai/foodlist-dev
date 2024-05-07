@@ -42,12 +42,23 @@ a {
 h1,
 h2 {
   font-weight: 600;
-  font-size: 2.027rem;
   text-wrap: balance;
+}
+
+h1 {
+  font-size: 2.027rem;
+}
+
+h2 {
+  font-size: 1.802rem;
 }
 
 p {
   text-wrap: pretty;
+}
+
+small {
+  font-size: 0.889rem;
 }
 
 hgroup {
@@ -59,4 +70,50 @@ hgroup {
 
 ul {
   list-style: none;
+}
+
+form {
+  display: grid;
+  gap: 2rem;
+}
+
+form [form-container="actions"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+form [form-container="actions"] button {
+  justify-content: center;
+}
+
+label {
+  display: grid;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  all: unset;
+  background-color: var(--transparent-gray);
+  border: 1px solid var(--gray);
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-weight: 400;
+}
+
+textarea {
+  overflow-wrap: break-word;
+  resize: vertical;
+}
+
+input:hover,
+textarea:hover {
+  cursor: text;
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--white);
 }

@@ -1,4 +1,11 @@
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/Dialog";
+import {
   ghostBtn,
   outlineBtn,
   primaryBtn,
@@ -32,9 +39,7 @@ function Sidebar({ currentListId }: { currentListId?: string }) {
       <h2>My lists</h2>
 
       <div className={styles.actions}>
-        <button className={secondaryBtn}>
-          New list <IconPlus size={16} />
-        </button>
+        <NewListAction />
       </div>
 
       <nav>
@@ -49,6 +54,58 @@ function Sidebar({ currentListId }: { currentListId?: string }) {
         ))}
       </nav>
     </aside>
+  );
+}
+
+function NewListAction() {
+  const actionLabel = "New list";
+
+  return (
+    <Dialog>
+      <DialogTrigger className={secondaryBtn}>
+        {actionLabel} <IconPlus size={16} />
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogTitle>{actionLabel}</DialogTitle>
+
+        <form>
+          <ListFields />
+
+          <div form-container="actions">
+            <DialogClose className={outlineBtn}>Cancel</DialogClose>
+
+            <button type="submit" className={secondaryBtn}>
+              Create
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ListFields() {
+  return (
+    <>
+      <label>
+        <small>Name</small>
+
+        <input
+          type="text"
+          minLength={2}
+          maxLength={80}
+          placeholder="My list"
+          required
+        />
+      </label>
+
+      <label>
+        <small>Note</small>
+
+        <textarea rows={6} maxLength={320} />
+      </label>
+    </>
   );
 }
 

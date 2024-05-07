@@ -1,0 +1,91 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0 0 0 / 50%);
+  z-index: 1;
+}
+
+.overlay[data-state="open"] {
+  animation: fade-in var(--ease);
+}
+
+.overlay[data-state="closed"] {
+  animation: fade-out var(--ease);
+}
+
+.content {
+  position: relative;
+  display: grid;
+  max-width: 48rem;
+  width: 100%;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: var(--black);
+  border: 1px solid var(--gray);
+  border-radius: 1rem;
+}
+
+.content[data-state="open"] {
+  animation: slide-up var(--ease), fade-in var(--ease);
+}
+
+.content[data-state="closed"] {
+  animation: slide-down var(--ease), fade-out var(--ease);
+}
+
+.content:focus-visible {
+  outline: 2px solid var(--white);
+}
+
+.closeBtn {
+  composes: ghostBtn from "./Button.module.css";
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+@media only screen and (min-width: 48rem) {
+  .overlay {
+    align-items: center;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(1rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(1rem);
+  }
+}
