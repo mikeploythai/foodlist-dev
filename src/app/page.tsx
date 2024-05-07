@@ -7,8 +7,10 @@ import {
 import { mono } from "@/styles/fonts";
 import styles from "@/styles/page.module.css";
 import { tempFoods, tempLists } from "@/utils/temp-db";
-import { IconDots, IconPlus } from "@tabler/icons-react";
+import { IconClock, IconDots, IconPlus } from "@tabler/icons-react";
 import clsx from "clsx";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
 
 export default function Home({
@@ -50,6 +52,9 @@ function Sidebar({ currentListId }: { currentListId?: string }) {
   );
 }
 
+dayjs.extend(relativeTime);
+const daysUntilExpired = (date: string) => dayjs(date).diff(dayjs(), "day");
+
 function CurrentList({ currentListId }: { currentListId?: string }) {
   if (!currentListId) return;
 
@@ -78,14 +83,30 @@ function CurrentList({ currentListId }: { currentListId?: string }) {
           {foods.map((food) => (
             <li key={food.id} className={styles.foodAction}>
               <button className={ghostBtn}>
-                <strong className={mono.className}>
+                <strong
+                  className={clsx(
+                    mono.className,
+                    food.quantity <= 5 && styles.foodLow,
+                    food.quantity <= 1 && styles.foodEmpty
+                  )}
+                >
                   {String(food.quantity).padStart(2)}x
                 </strong>
               </button>
 
               <button className={styles.foodDialogAction}>
                 <span className={styles.actionLabel}>{food.name}</span>
-                {/* <IconHourglassLow size={16} /> */}
+                {!!food.expires_at &&
+                  daysUntilExpired(food.expires_at) <= 7 && (
+                    <IconClock
+                      size={16}
+                      className={clsx(
+                        styles.foodExpiring,
+                        daysUntilExpired(food.expires_at) <= 1 &&
+                          styles.foodExpired
+                      )}
+                    />
+                  )}
               </button>
 
               <button aria-label="Food options" className={ghostBtn}>

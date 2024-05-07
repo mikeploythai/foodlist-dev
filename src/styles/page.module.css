@@ -88,6 +88,16 @@
   border-radius: unset;
 }
 
+.foodExpiring,
+.foodLow {
+  color: var(--orange);
+}
+
+.foodExpired,
+.foodEmpty {
+  color: var(--red);
+}
+
 @media only screen and (min-width: 48rem) {
   .hidden {
     display: block;

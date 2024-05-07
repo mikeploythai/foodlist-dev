@@ -24,7 +24,7 @@ export const tempFoods = [
     price: 1.29,
     price_unit: "per pound",
     market: "Trader Joe's",
-    expires_at: "2024-06-21",
+    expires_at: "2024-05-13",
   },
   {
     id: "food-2",
@@ -78,7 +78,7 @@ export const tempFoods = [
     id: "food-8",
     list_id: "list-3",
     name: "Pears",
-    quantity: 4,
+    quantity: 0,
   },
   {
     id: "food-9",

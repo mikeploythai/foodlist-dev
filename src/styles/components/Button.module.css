@@ -38,6 +38,11 @@
   border: 1px solid var(--gray);
 }
 
+.dangerBtn {
+  composes: primaryBtn;
+  background-color: var(--red);
+}
+
 @media (hover: hover) {
   .primaryBtn:hover {
     background-color: rgba(var(--orange-rgb) / 80%);
@@ -49,5 +54,9 @@
 
   .ghostBtn:hover {
     background-color: var(--transparent-gray);
+  }
+
+  .dangerBtn:hover {
+    background-color: rgba(var(--red-rgb) / 80%);
   }
 }

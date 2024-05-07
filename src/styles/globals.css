@@ -3,10 +3,12 @@
   --white: #fafafa;
   --gray: #404040;
   --orange: #ea580c;
+  --red: #c83044;
 
   --white-rgb: 250 250 250;
   --gray-rgb: 64 64 64;
   --orange-rgb: 234 88 12;
+  --red-rgb: 200 48 68;
 
   --transparent-gray: rgba(var(--gray-rgb) / 20%);
 
