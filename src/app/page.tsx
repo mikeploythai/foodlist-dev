@@ -1,160 +1,245 @@
 import { AlertDialogTrigger } from "@/components/AlertDialog";
-import { DialogTrigger } from "@/components/Dialog";
-import { DropdownItem } from "@/components/Dropdown";
-import { ghostBtn } from "@/styles/components/Button.module.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/Dialog";
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownItem,
+  DropdownTrigger,
+} from "@/components/Dropdown";
+import { CreateFood, DeleteFood, EditFood } from "@/components/FoodActions";
+import { CreateList, DeleteList, EditList } from "@/components/ListActions";
+import styles from "@/styles/app.module.css";
+import { ghostBtn, outlineBtn } from "@/styles/components/Button.module.css";
 import { mono } from "@/styles/fonts";
-import {
-  foodAction,
-  foodActions,
-  foodDialogAction,
-  foodEmpty,
-  foodExpired,
-  foodExpiring,
-  foodLow,
-} from "@/styles/food.module.css";
-import styles from "@/styles/page.module.css";
-import { daysUntilExpired } from "@/utils/daysUntilExpired";
 import { tempFoods, tempLists } from "@/utils/temp-db";
-import { IconClock, IconPencil, IconTrash } from "@tabler/icons-react";
+import {
+  IconBuildingStore,
+  IconCashBanknote,
+  IconClock,
+  IconDots,
+  IconPencil,
+  IconTrash,
+} from "@tabler/icons-react";
 import clsx from "clsx";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
-import {
-  AddFoodAction,
-  DeleteFoodAction,
-  EditFoodAction,
-  FoodActionMenu,
-  ViewFoodAction,
-} from "./_components/FoodActions";
-import {
-  DeleteListAction,
-  EditListAction,
-  ListActionMenu,
-  NewListAction,
-} from "./_components/ListActions";
 
-export default function Home({
+export default function App({
   searchParams,
 }: {
   searchParams?: { id?: string };
 }) {
   return (
     <div className={styles.root}>
-      <Sidebar listId={searchParams?.id} />
-      <CurrentList listId={searchParams?.id} />
+      <aside
+        className={clsx(
+          styles.sidebar,
+          !!searchParams?.id && styles.hideSidebar
+        )}
+      >
+        <h2>My lists</h2>
+
+        <div className={styles.actionBar}>
+          <CreateList />
+        </div>
+
+        <nav>
+          {tempLists.map((list) => (
+            <Link
+              key={list.id}
+              href={`/?id=${list.id}`}
+              className={
+                list.id !== searchParams?.id ? ghostBtn : styles.activeList
+              }
+            >
+              <span className={styles.truncate}>{list.name}</span>
+            </Link>
+          ))}
+        </nav>
+      </aside>
+
+      <List listId={searchParams?.id} />
     </div>
   );
 }
 
-function Sidebar({ listId }: { listId?: string }) {
-  return (
-    <aside className={clsx(styles.sidebar, !!listId && styles.hidden)}>
-      <h2>My lists</h2>
-
-      <div className={styles.actions}>
-        <NewListAction />
-      </div>
-
-      <nav>
-        {tempLists.map((list) => (
-          <Link
-            key={list.id}
-            href={`/?id=${list.id}`}
-            className={list.id !== listId ? ghostBtn : styles.activeList}
-          >
-            <span className={styles.actionLabel}>{list.name}</span>
-          </Link>
-        ))}
-      </nav>
-    </aside>
-  );
-}
-
-function CurrentList({ listId }: { listId?: string }) {
+function List({ listId }: { listId?: string }) {
   if (!listId) return;
 
   const list = tempLists.filter(({ id }) => id === listId)[0];
   const foods = tempFoods.filter(({ list_id }) => list_id === listId);
 
   return (
-    <main key={listId} className={styles.currentList}>
+    <main key={listId} className={styles.list}>
       <hgroup>
         <h1>{list.name}</h1>
         {!!list.note && <p>{list.note}</p>}
       </hgroup>
 
-      <div className={styles.actions}>
-        <AddFoodAction />
+      <div className={styles.actionBar}>
+        <CreateFood />
 
-        <ListActionMenu>
-          <EditListAction list={list}>
-            <DropdownItem className={ghostBtn} asChild>
-              <DialogTrigger>
-                Edit list <IconPencil size={16} />
-              </DialogTrigger>
-            </DropdownItem>
-          </EditListAction>
+        <Dropdown>
+          <DropdownTrigger aria-label="List menu" className={outlineBtn}>
+            <IconDots size={16} />
+          </DropdownTrigger>
 
-          <DeleteListAction listId={listId} listName={list.name}>
-            <DropdownItem className={ghostBtn} asChild>
-              <AlertDialogTrigger>
-                Delete list <IconTrash size={16} />
-              </AlertDialogTrigger>
-            </DropdownItem>
-          </DeleteListAction>
-        </ListActionMenu>
+          <DropdownContent>
+            <EditList list={list}>
+              <DropdownItem className={ghostBtn} asChild>
+                <DialogTrigger>
+                  Edit list <IconPencil size={16} />
+                </DialogTrigger>
+              </DropdownItem>
+            </EditList>
+
+            <DeleteList listId={list.id} listName={list.name}>
+              <DropdownItem className={ghostBtn} asChild>
+                <AlertDialogTrigger>
+                  Delete list <IconTrash size={16} />
+                </AlertDialogTrigger>
+              </DropdownItem>
+            </DeleteList>
+          </DropdownContent>
+        </Dropdown>
       </div>
 
-      <ol className={foodActions}>
+      <ol className={styles.foodList}>
         {foods.map((food) => (
-          <li key={food.id} className={foodAction}>
+          <li key={food.id}>
             <button className={ghostBtn}>
               <strong
                 className={clsx(
                   mono.className,
-                  food.quantity <= 5 && foodLow,
-                  food.quantity <= 1 && foodEmpty
+                  food.quantity <= 5 && styles.quantityLow,
+                  food.quantity <= 1 && styles.quantityEmpty
                 )}
               >
                 {String(food.quantity).padStart(2)}x
               </strong>
             </button>
 
-            <ViewFoodAction food={food}>
-              <DialogTrigger className={foodDialogAction}>
-                <span className={styles.actionLabel}>{food.name}</span>
-                {!!food.expiration &&
-                  daysUntilExpired(food.expiration) <= 7 && (
-                    <IconClock
-                      size={16}
-                      className={clsx(
-                        foodExpiring,
-                        daysUntilExpired(food.expiration) <= 1 && foodExpired
-                      )}
-                    />
-                  )}
-              </DialogTrigger>
-            </ViewFoodAction>
+            <ViewFood food={food} />
 
-            <FoodActionMenu>
-              <EditFoodAction food={food}>
-                <DropdownItem className={ghostBtn} asChild>
-                  <DialogTrigger>
-                    Edit food <IconPencil size={16} />
-                  </DialogTrigger>
-                </DropdownItem>
-              </EditFoodAction>
+            <Dropdown>
+              <DropdownTrigger
+                aria-label="Food actions dropdown"
+                className={ghostBtn}
+              >
+                <IconDots size={16} />
+              </DropdownTrigger>
 
-              <DeleteFoodAction foodId={food.id} foodName={food.name}>
-                <DropdownItem className={ghostBtn} asChild>
-                  <AlertDialogTrigger>
-                    Delete food <IconTrash size={16} />
-                  </AlertDialogTrigger>
-                </DropdownItem>
-              </DeleteFoodAction>
-            </FoodActionMenu>
+              <DropdownContent>
+                <EditFood food={food}>
+                  <DropdownItem className={ghostBtn} asChild>
+                    <DialogTrigger>
+                      Edit food <IconPencil size={16} />
+                    </DialogTrigger>
+                  </DropdownItem>
+                </EditFood>
+
+                <DeleteFood foodId={food.id} foodName={food.name}>
+                  <DropdownItem className={ghostBtn} asChild>
+                    <AlertDialogTrigger>
+                      Delete food <IconTrash size={16} />
+                    </AlertDialogTrigger>
+                  </DropdownItem>
+                </DeleteFood>
+              </DropdownContent>
+            </Dropdown>
           </li>
         ))}
       </ol>
     </main>
+  );
+}
+
+dayjs.extend(relativeTime);
+const daysUntilExpired = (date: string) => dayjs(date).diff(dayjs(), "day");
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+
+function ViewFood({ food }: { food: (typeof tempFoods)[0] }) {
+  const details = [
+    {
+      Icon: IconCashBanknote,
+      value: !!food.price
+        ? `${formatCurrency(food.price)} ${food.price_unit}`
+        : "N/A",
+    },
+    {
+      Icon: IconBuildingStore,
+      value: food.market ?? "N/A",
+    },
+    {
+      Icon: IconClock,
+      value: !!food.expiration
+        ? `${
+            daysUntilExpired(food.expiration) < 0 ? "Expired" : "Expires"
+          } ${dayjs(food.expiration).fromNow()}`
+        : "N/A",
+    },
+  ];
+
+  return (
+    <Dialog>
+      <DialogTrigger className={styles.foodDialogTrigger}>
+        <span className={styles.truncate}>{food.name}</span>
+
+        {!!food.expiration && daysUntilExpired(food.expiration) <= 7 && (
+          <IconClock
+            size={16}
+            className={clsx(
+              styles.foodExpiring,
+              daysUntilExpired(food.expiration) <= 1 && styles.foodExpired
+            )}
+          />
+        )}
+      </DialogTrigger>
+
+      <DialogContent>
+        <hgroup>
+          <DialogTitle>
+            <strong
+              className={clsx(
+                mono.className,
+                food.quantity <= 5 && styles.quantityLow,
+                food.quantity <= 1 && styles.quantityEmpty
+              )}
+            >
+              {String(food.quantity).padStart(2)}x
+            </strong>{" "}
+            {food.name}
+          </DialogTitle>
+
+          {!!food.note && <DialogDescription>{food.note}</DialogDescription>}
+        </hgroup>
+
+        <div className={styles.foodDetails}>
+          <h3>
+            <small>Details</small>
+          </h3>
+
+          <ul>
+            {details.map(({ Icon, value }, i) => (
+              <li key={`details-${i}`}>
+                <Icon size={16} /> {value}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,0 +1,157 @@
+/* Shared */
+.root {
+  flex: 1;
+  display: flex;
+}
+
+.sidebar,
+.list {
+  width: 100%;
+  padding: 2rem 2rem 0;
+  animation: slide-up var(--ease);
+}
+
+.actionBar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 2rem;
+  background: linear-gradient(var(--black) 50%, transparent);
+  z-index: 1;
+}
+
+.actionBar button {
+  backdrop-filter: blur(1rem);
+}
+
+.actionBar button:first-of-type {
+  flex: 1;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sidebar */
+.sidebar h2 {
+  font-size: 2.027rem;
+}
+
+.sidebar nav {
+  display: grid;
+  padding: 2rem 0;
+}
+
+.sidebar nav a {
+  overflow: hidden;
+}
+
+.hideSidebar {
+  display: none;
+}
+
+/* List */
+.list {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+/* Food list */
+.foodList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem 0;
+}
+
+.foodList li {
+  display: flex;
+  border: 1px solid var(--gray);
+  border-radius: var(--rounded);
+}
+
+.foodList li button:first-of-type {
+  white-space: pre;
+  border-right: 1px solid var(--gray);
+  border-radius: var(--rounded) 0 0 var(--rounded);
+}
+
+.foodList li button:last-of-type {
+  border-radius: 0 var(--rounded) var(--rounded) 0;
+}
+
+.foodExpiring,
+.quantityLow {
+  color: var(--orange);
+}
+
+.foodExpired,
+.quantityEmpty {
+  color: var(--red);
+}
+
+/* Food dialog */
+.foodDialogTrigger {
+  composes: ghostBtn from "./components/Button.module.css";
+  flex: 1;
+  justify-content: space-between;
+  border-radius: unset;
+  overflow: hidden;
+}
+
+.foodDetails,
+.foodDetails ul {
+  display: grid;
+  gap: 0.5rem;
+  color: var(--light-gray);
+}
+
+.foodDetails li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media only screen and (min-width: 48rem) {
+  /* Shared */
+  .sidebar,
+  .list {
+    height: 100vh;
+    overflow-y: scroll;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    max-width: 20rem;
+    border-right: 1px solid var(--gray);
+  }
+
+  .hideSidebar {
+    display: block;
+  }
+
+  .activeList {
+    composes: ghostBtn from "./components/Button.module.css";
+    background-color: var(--transparent-gray);
+  }
+}
+
+@media only screen and (min-width: 64rem) {
+  .sidebar {
+    max-width: 24rem;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

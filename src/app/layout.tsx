@@ -1,6 +1,7 @@
 import { sans } from "@/styles/fonts";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={sans.className}>{children}</body>
+      <body className={sans.className}>
+        {children}
+        <Toaster theme="dark" style={{ pointerEvents: "auto" }} richColors />
+      </body>
     </html>
   );
 }
