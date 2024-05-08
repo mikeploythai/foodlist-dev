@@ -2,13 +2,14 @@
   --black: #171717;
   --white: #fafafa;
   --gray: #404040;
+  --light-gray: #737373;
   --orange: #ea580c;
-  --red: #c83044;
+  --red: #be123c;
 
   --white-rgb: 250 250 250;
   --gray-rgb: 64 64 64;
   --orange-rgb: 234 88 12;
-  --red-rgb: 200 48 68;
+  --red-rgb: 190 18 60;
 
   --transparent-gray: rgba(var(--gray-rgb) / 25%);
 
@@ -44,7 +45,8 @@ a {
 }
 
 h1,
-h2 {
+h2,
+h3 {
   font-weight: 600;
   text-wrap: balance;
 }
@@ -79,16 +81,6 @@ ul {
 form {
   display: grid;
   gap: 2rem;
-}
-
-form [form-container="columns"] {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-form [form-container="columns"] button {
-  justify-content: center;
 }
 
 label {
