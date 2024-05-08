@@ -1,4 +1,12 @@
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from "@/components/AlertDialog";
+import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -7,6 +15,12 @@ import {
   DialogTrigger,
 } from "@/components/Dialog";
 import {
+  Dropdown,
+  DropdownContent,
+  DropdownTrigger,
+} from "@/components/Dropdown";
+import {
+  dangerBtn,
   outlineBtn,
   primaryBtn,
   secondaryBtn,
@@ -26,11 +40,12 @@ import {
   TEXTAREA_ROWS,
 } from "@/utils/constants";
 import { daysUntilExpired } from "@/utils/daysUntilExpired";
-import { tempFoods } from "@/utils/temp-db";
+import { tempFoods, tempLists } from "@/utils/temp-db";
 import {
   IconBuildingStore,
   IconCashBanknote,
   IconClock,
+  IconDots,
   IconPlus,
 } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -137,6 +152,90 @@ export function ViewFoodAction({
   );
 }
 
+export function EditFoodAction({
+  food,
+  children,
+}: {
+  food: (typeof tempFoods)[0];
+  children: React.ReactNode;
+}) {
+  return (
+    <Dialog>
+      {children}
+
+      <DialogContent>
+        <DialogTitle>Edit food</DialogTitle>
+
+        <form>
+          <FoodFields food={food} />
+
+          <div className={columns}>
+            <DialogClose className={outlineBtn}>Cancel</DialogClose>
+
+            <button type="submit" className={secondaryBtn}>
+              Update
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function DeleteFoodAction({
+  foodId,
+  foodName,
+  children,
+}: {
+  foodId: string;
+  foodName: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <AlertDialog>
+      {children}
+
+      <AlertDialogContent>
+        <hgroup>
+          <AlertDialogTitle>
+            Are you sure you want to delete "{foodName}"?
+          </AlertDialogTitle>
+
+          <AlertDialogDescription>
+            This food will be <strong>permanently deleted</strong> from this
+            list and our database. You won&apos;t be able to recover it after.
+          </AlertDialogDescription>
+        </hgroup>
+
+        <form>
+          <div className={columns}>
+            <AlertDialogCancel className={outlineBtn}>Cancel</AlertDialogCancel>
+
+            <AlertDialogAction type="submit" className={dangerBtn}>
+              Delete
+            </AlertDialogAction>
+          </div>
+        </form>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+export function FoodActionMenu({ children }: { children: React.ReactNode }) {
+  return (
+    <Dropdown>
+      <DropdownTrigger
+        aria-label="Food action menu"
+        className={styles.foodMenuTrigger}
+      >
+        <IconDots size={16} />
+      </DropdownTrigger>
+
+      <DropdownContent>{children}</DropdownContent>
+    </Dropdown>
+  );
+}
+
 function FoodFields({ food }: { food?: (typeof tempFoods)[0] }) {
   return (
     <>
@@ -153,6 +252,20 @@ function FoodFields({ food }: { food?: (typeof tempFoods)[0] }) {
           required
         />
       </label>
+
+      {!!food?.list_id && (
+        <label>
+          <small>List</small>
+
+          <select name="list_id" defaultValue={food.list_id}>
+            {tempLists.map((list) => (
+              <option key={list.id} value={list.id}>
+                {list.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
 
       <label>
         <small>Quantity</small>

@@ -1,7 +1,7 @@
-.listActionTrigger {
+.listMenuTrigger {
   composes: outlineBtn from "./components/Button.module.css";
 }
 
-.listActionTrigger[data-state="open"] {
+.listMenuTrigger[data-state="open"] {
   background-color: var(--transparent-gray);
 }

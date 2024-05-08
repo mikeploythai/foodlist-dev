@@ -15,15 +15,16 @@ import {
 import styles from "@/styles/page.module.css";
 import { daysUntilExpired } from "@/utils/daysUntilExpired";
 import { tempFoods, tempLists } from "@/utils/temp-db";
-import {
-  IconClock,
-  IconDots,
-  IconPencil,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconClock, IconPencil, IconTrash } from "@tabler/icons-react";
 import clsx from "clsx";
 import Link from "next/link";
-import { AddFoodAction, ViewFoodAction } from "./_components/FoodActions";
+import {
+  AddFoodAction,
+  DeleteFoodAction,
+  EditFoodAction,
+  FoodActionMenu,
+  ViewFoodAction,
+} from "./_components/FoodActions";
 import {
   DeleteListAction,
   EditListAction,
@@ -134,9 +135,23 @@ function CurrentList({ listId }: { listId?: string }) {
               </DialogTrigger>
             </ViewFoodAction>
 
-            <button aria-label="Food options" className={ghostBtn}>
-              <IconDots size={16} />
-            </button>
+            <FoodActionMenu>
+              <EditFoodAction food={food}>
+                <DropdownItem className={ghostBtn} asChild>
+                  <DialogTrigger>
+                    Edit food <IconPencil size={16} />
+                  </DialogTrigger>
+                </DropdownItem>
+              </EditFoodAction>
+
+              <DeleteFoodAction foodId={food.id} foodName={food.name}>
+                <DropdownItem className={ghostBtn} asChild>
+                  <AlertDialogTrigger>
+                    Delete food <IconTrash size={16} />
+                  </AlertDialogTrigger>
+                </DropdownItem>
+              </DeleteFoodAction>
+            </FoodActionMenu>
           </li>
         ))}
       </ol>

@@ -45,6 +45,14 @@
   gap: 0.5rem;
 }
 
+.foodMenuTrigger {
+  composes: ghostBtn from "./components/Button.module.css";
+}
+
+.foodMenuTrigger[data-state="open"] {
+  background-color: var(--transparent-gray);
+}
+
 .foodExpiring,
 .foodLow {
   color: var(--orange);

@@ -137,7 +137,7 @@ export function ListActionMenu({ children }: { children: React.ReactNode }) {
     <Dropdown>
       <DropdownTrigger
         aria-label="List action menu"
-        className={styles.listActionTrigger}
+        className={styles.listMenuTrigger}
       >
         <IconDots size={16} />
       </DropdownTrigger>
