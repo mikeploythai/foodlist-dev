@@ -73,23 +73,27 @@
   border-radius: var(--rounded);
 }
 
-.foodList li button:first-of-type {
+.foodList li button:last-of-type {
+  border-radius: 0 var(--rounded) var(--rounded) 0;
+}
+
+.foodList li form .foodQuantity {
   white-space: pre;
   border-right: 1px solid var(--gray);
   border-radius: var(--rounded) 0 0 var(--rounded);
 }
 
-.foodList li button:last-of-type {
-  border-radius: 0 var(--rounded) var(--rounded) 0;
+.foodQuantity {
+  composes: ghostBtn from "./components/Button.module.css";
 }
 
 .foodExpiring,
-.quantityLow {
+.foodQuantityLow {
   color: var(--orange);
 }
 
 .foodExpired,
-.quantityEmpty {
+.foodQuantityEmpty {
   color: var(--red);
 }
 

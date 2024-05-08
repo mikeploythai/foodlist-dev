@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  foodQuantity,
+  foodQuantityEmpty,
+  foodQuantityLow,
+} from "@/styles/app.module.css";
 import { primaryBtn } from "@/styles/components/Button.module.css";
 import { columns } from "@/styles/components/Dialog.module.css";
+import { mono } from "@/styles/fonts";
 import {
   MAX_INPUT_LENGTH,
   MAX_PRICE,
@@ -15,7 +21,8 @@ import {
 } from "@/utils/constants";
 import { tempFoods, tempLists } from "@/utils/temp-db";
 import { IconPlus } from "@tabler/icons-react";
-import { useState, useTransition } from "react";
+import clsx from "clsx";
+import { useOptimistic, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -132,6 +139,36 @@ export function DeleteFood({
         />
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+export function FoodQuantity({ quantity }: { quantity: number }) {
+  const [isPending, startTransition] = useTransition();
+  const [optimisticQuantity, decreaseOptimisticQuantity] = useOptimistic(
+    quantity,
+    (currentQuantity) => currentQuantity - 1
+  );
+
+  function handleAction() {
+    startTransition(async () => {
+      decreaseOptimisticQuantity(null);
+    });
+  }
+
+  return (
+    <form action={handleAction}>
+      <button disabled={isPending} className={foodQuantity}>
+        <strong
+          className={clsx(
+            mono.className,
+            optimisticQuantity <= 5 && foodQuantityLow,
+            optimisticQuantity <= 1 && foodQuantityEmpty
+          )}
+        >
+          {String(optimisticQuantity).padStart(2)}x
+        </strong>
+      </button>
+    </form>
   );
 }
 

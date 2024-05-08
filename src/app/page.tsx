@@ -12,7 +12,12 @@ import {
   DropdownItem,
   DropdownTrigger,
 } from "@/components/Dropdown";
-import { CreateFood, DeleteFood, EditFood } from "@/components/FoodActions";
+import {
+  CreateFood,
+  DeleteFood,
+  EditFood,
+  FoodQuantity,
+} from "@/components/FoodActions";
 import { CreateList, DeleteList, EditList } from "@/components/ListActions";
 import styles from "@/styles/app.module.css";
 import { ghostBtn, outlineBtn } from "@/styles/components/Button.module.css";
@@ -114,18 +119,7 @@ function List({ listId }: { listId?: string }) {
       <ol className={styles.foodList}>
         {foods.map((food) => (
           <li key={food.id}>
-            <button className={ghostBtn}>
-              <strong
-                className={clsx(
-                  mono.className,
-                  food.quantity <= 5 && styles.quantityLow,
-                  food.quantity <= 1 && styles.quantityEmpty
-                )}
-              >
-                {String(food.quantity).padStart(2)}x
-              </strong>
-            </button>
-
+            <FoodQuantity quantity={food.quantity} />
             <ViewFood food={food} />
 
             <Dropdown>
@@ -214,8 +208,8 @@ function ViewFood({ food }: { food: (typeof tempFoods)[0] }) {
             <strong
               className={clsx(
                 mono.className,
-                food.quantity <= 5 && styles.quantityLow,
-                food.quantity <= 1 && styles.quantityEmpty
+                food.quantity <= 5 && styles.foodQuantityLow,
+                food.quantity <= 1 && styles.foodQuantityEmpty
               )}
             >
               {String(food.quantity).padStart(2)}x
