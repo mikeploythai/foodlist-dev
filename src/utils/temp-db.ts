@@ -24,7 +24,8 @@ export const tempFoods = [
     price: 1.29,
     price_unit: "per pound",
     market: "Trader Joe's",
-    expires_at: "2024-05-13",
+    expiration: "2024-05-13",
+    note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel labore, dolores iste in sunt architecto incidunt iusto quasi magnam id. Nisi nostrum eum odio dolores delectus tempore quod voluptas rerum.",
   },
   {
     id: "food-2",
@@ -48,7 +49,7 @@ export const tempFoods = [
     price: 1.29,
     price_unit: "per pound",
     market: "Trader Joe's",
-    expires_at: "2024-04-21",
+    expiration: "2024-04-21",
   },
   {
     id: "food-5",
@@ -72,7 +73,8 @@ export const tempFoods = [
     price: 1.29,
     price_unit: "each",
     market: "Trader Joe's",
-    expires_at: "2025-06-21",
+    expiration: "2025-06-21",
+    note: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel labore, dolores iste in sunt architecto incidunt iusto quasi magnam id. Nisi nostrum eum odio dolores delectus tempore quod voluptas rerum.",
   },
   {
     id: "food-8",

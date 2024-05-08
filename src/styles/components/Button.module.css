@@ -1,4 +1,4 @@
-.primaryBtn {
+.foundation {
   --ease: 150ms ease;
 
   all: unset;
@@ -8,23 +8,36 @@
   padding: 0.5rem 1rem;
   border-radius: var(--rounded);
   font-weight: 500;
-  background-color: var(--orange);
-  color: var(--white);
   cursor: pointer;
   transition: background-color var(--ease), opacity var(--ease);
 }
 
-.primaryBtn:disabled {
+.foundation:disabled {
   opacity: 50%;
   cursor: not-allowed;
 }
 
-.primaryBtn:focus-visible {
+.foundation:focus-visible {
   outline: 2px solid var(--white);
 }
 
+.primaryBtn,
+.secondaryBtn,
+.ghostBtn,
+.dangerBtn {
+  composes: foundation;
+}
+
+.primaryBtn {
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.primaryBtn::selection {
+  background-color: rgba(0 0 0 / 25%);
+}
+
 .secondaryBtn {
-  composes: primaryBtn;
   background-color: var(--white);
   color: var(--black);
 }
@@ -34,8 +47,8 @@
 }
 
 .ghostBtn {
-  composes: primaryBtn;
   background-color: transparent;
+  color: var(--white);
 }
 
 .outlineBtn {
@@ -44,8 +57,8 @@
 }
 
 .dangerBtn {
-  composes: primaryBtn;
   background-color: var(--red);
+  color: var(--white);
 }
 
 @media (hover: hover) {

@@ -29,6 +29,16 @@ import {
 } from "@/styles/components/Button.module.css";
 import { mono } from "@/styles/fonts";
 import styles from "@/styles/page.module.css";
+import {
+  MAX_INPUT_LENGTH,
+  MAX_PRICE,
+  MAX_QUANTITY,
+  MAX_TEXTAREA_LENGTH,
+  MIN_INPUT_LENGTH,
+  MIN_PRICE,
+  MIN_QUANTITY,
+  PRICE_UNITS,
+} from "@/utils/constants";
 import { tempFoods, tempLists } from "@/utils/temp-db";
 import {
   IconClock,
@@ -94,7 +104,7 @@ function NewListAction() {
         <form>
           <ListFields />
 
-          <div form-container="actions">
+          <div form-container="columns">
             <DialogClose className={outlineBtn}>Cancel</DialogClose>
 
             <button type="submit" className={secondaryBtn}>
@@ -115,8 +125,9 @@ function ListFields({ list }: { list?: (typeof tempLists)[0] }) {
 
         <input
           type="text"
-          minLength={2}
-          maxLength={80}
+          name="name"
+          minLength={MIN_INPUT_LENGTH}
+          maxLength={MAX_INPUT_LENGTH}
           placeholder="My list"
           defaultValue={list?.name}
           required
@@ -126,7 +137,12 @@ function ListFields({ list }: { list?: (typeof tempLists)[0] }) {
       <label>
         <small>Note</small>
 
-        <textarea rows={6} maxLength={320} defaultValue={list?.note} />
+        <textarea
+          name="note"
+          rows={6}
+          maxLength={MAX_TEXTAREA_LENGTH}
+          defaultValue={list?.note}
+        />
       </label>
     </>
   );
@@ -150,9 +166,7 @@ function CurrentList({ currentListId }: { currentListId?: string }) {
         </hgroup>
 
         <div className={styles.actions}>
-          <button className={primaryBtn}>
-            Add food <IconPlus size={16} />
-          </button>
+          <AddFoodAction />
 
           <ListActionMenu>
             <EditListAction currentListId={currentListId}>
@@ -190,13 +204,13 @@ function CurrentList({ currentListId }: { currentListId?: string }) {
 
               <button className={styles.foodDialogAction}>
                 <span className={styles.actionLabel}>{food.name}</span>
-                {!!food.expires_at &&
-                  daysUntilExpired(food.expires_at) <= 7 && (
+                {!!food.expiration &&
+                  daysUntilExpired(food.expiration) <= 7 && (
                     <IconClock
                       size={16}
                       className={clsx(
                         styles.foodExpiring,
-                        daysUntilExpired(food.expires_at) <= 1 &&
+                        daysUntilExpired(food.expiration) <= 1 &&
                           styles.foodExpired
                       )}
                     />
@@ -211,6 +225,112 @@ function CurrentList({ currentListId }: { currentListId?: string }) {
         </ol>
       </div>
     </main>
+  );
+}
+
+function AddFoodAction() {
+  const actionLabel = "Add food";
+
+  return (
+    <Dialog>
+      <DialogTrigger className={primaryBtn}>
+        {actionLabel} <IconPlus size={16} />
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogTitle>{actionLabel}</DialogTitle>
+
+        <form>
+          <FoodFields />
+
+          <div form-container="columns">
+            <DialogClose className={outlineBtn}>Cancel</DialogClose>
+
+            <button type="submit" className={secondaryBtn}>
+              Create
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function FoodFields({ food }: { food?: (typeof tempFoods)[0] }) {
+  return (
+    <>
+      <label>
+        <small>Name</small>
+
+        <input
+          type="text"
+          name="name"
+          minLength={MIN_INPUT_LENGTH}
+          maxLength={MAX_INPUT_LENGTH}
+          placeholder="Apples"
+          defaultValue={food?.name}
+          required
+        />
+      </label>
+
+      <label>
+        <small>Quantity</small>
+
+        <input
+          type="number"
+          name="quantity"
+          min={MIN_QUANTITY}
+          max={MAX_QUANTITY}
+          placeholder="3"
+          defaultValue={food?.quantity}
+          required
+        />
+      </label>
+
+      <div form-container="columns">
+        <label>
+          <small>Price (USD)</small>
+
+          <input
+            type="number"
+            name="price"
+            min={MIN_PRICE}
+            max={MAX_PRICE}
+            step={0.01}
+            defaultValue={food?.price}
+          />
+        </label>
+
+        <label>
+          <small>Price Unit</small>
+
+          <select name="price_unit" defaultValue={food?.price_unit}>
+            {PRICE_UNITS.map((unit) => (
+              <option key={unit} value={unit}>
+                {unit}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <label>
+        <small>Expiration</small>
+
+        <input type="date" name="expiration" defaultValue={food?.expiration} />
+      </label>
+
+      <label>
+        <small>Note</small>
+
+        <textarea
+          name="note"
+          rows={6}
+          maxLength={MAX_TEXTAREA_LENGTH}
+          defaultValue={food?.note}
+        />
+      </label>
+    </>
   );
 }
 
@@ -248,7 +368,7 @@ function EditListAction({
         <form>
           <ListFields list={list} />
 
-          <div form-container="actions">
+          <div form-container="columns">
             <DialogClose className={outlineBtn}>Cancel</DialogClose>
 
             <button type="submit" className={secondaryBtn}>
@@ -286,7 +406,7 @@ function DeleteListAction({
         </hgroup>
 
         <form>
-          <div form-container="actions">
+          <div form-container="columns">
             <AlertDialogCancel className={outlineBtn}>Cancel</AlertDialogCancel>
 
             <AlertDialogAction type="submit" className={dangerBtn}>
