@@ -1,4 +1,13 @@
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/AlertDialog";
+import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -12,6 +21,7 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown";
 import {
+  dangerBtn,
   ghostBtn,
   outlineBtn,
   primaryBtn,
@@ -153,11 +163,13 @@ function CurrentList({ currentListId }: { currentListId?: string }) {
               </DropdownItem>
             </EditListAction>
 
-            <DropdownItem className={ghostBtn} asChild>
-              <button>
-                Delete list <IconTrash size={16} />
-              </button>
-            </DropdownItem>
+            <DeleteListAction currentListId={currentListId}>
+              <DropdownItem className={ghostBtn} asChild>
+                <AlertDialogTrigger>
+                  Delete list <IconTrash size={16} />
+                </AlertDialogTrigger>
+              </DropdownItem>
+            </DeleteListAction>
           </ListActionMenu>
         </div>
 
@@ -246,5 +258,43 @@ function EditListAction({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function DeleteListAction({
+  currentListId,
+  children,
+}: {
+  currentListId: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <AlertDialog>
+      {children}
+
+      <AlertDialogContent>
+        <hgroup>
+          <AlertDialogTitle>
+            Are you sure you want to delete this list?
+          </AlertDialogTitle>
+
+          <AlertDialogDescription>
+            This list, and the food in it, will be{" "}
+            <strong>permanently deleted</strong> from our servers. You
+            won&apos;t be able to recover it after.
+          </AlertDialogDescription>
+        </hgroup>
+
+        <form>
+          <div form-container="actions">
+            <AlertDialogCancel className={outlineBtn}>Cancel</AlertDialogCancel>
+
+            <AlertDialogAction type="submit" className={dangerBtn}>
+              Delete
+            </AlertDialogAction>
+          </div>
+        </form>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
