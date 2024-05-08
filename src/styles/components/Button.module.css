@@ -51,6 +51,7 @@
 @media (hover: hover) {
   .primaryBtn:hover:not(:disabled) {
     background-color: rgba(var(--orange-rgb) / 80%);
+    outline: unset;
   }
 
   .secondaryBtn:hover:not(:disabled) {

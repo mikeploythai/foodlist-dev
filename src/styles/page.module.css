@@ -102,6 +102,14 @@
   color: var(--red);
 }
 
+.listActionTrigger {
+  composes: outlineBtn from "./components/Button.module.css";
+}
+
+.listActionTrigger[data-state="open"] {
+  background-color: var(--transparent-gray);
+}
+
 @media only screen and (min-width: 48rem) {
   .hidden {
     display: block;

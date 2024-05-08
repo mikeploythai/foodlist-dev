@@ -10,7 +10,7 @@
   --orange-rgb: 234 88 12;
   --red-rgb: 200 48 68;
 
-  --transparent-gray: rgba(var(--gray-rgb) / 20%);
+  --transparent-gray: rgba(var(--gray-rgb) / 25%);
 
   --rounded: 9999px;
   --ease: 500ms ease;

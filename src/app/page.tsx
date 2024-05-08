@@ -6,6 +6,12 @@ import {
   DialogTrigger,
 } from "@/components/Dialog";
 import {
+  Dropdown,
+  DropdownContent,
+  DropdownItem,
+  DropdownTrigger,
+} from "@/components/Dropdown";
+import {
   ghostBtn,
   outlineBtn,
   primaryBtn,
@@ -14,7 +20,13 @@ import {
 import { mono } from "@/styles/fonts";
 import styles from "@/styles/page.module.css";
 import { tempFoods, tempLists } from "@/utils/temp-db";
-import { IconClock, IconDots, IconPlus } from "@tabler/icons-react";
+import {
+  IconClock,
+  IconDots,
+  IconPencil,
+  IconPlus,
+  IconTrash,
+} from "@tabler/icons-react";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -85,7 +97,7 @@ function NewListAction() {
   );
 }
 
-function ListFields() {
+function ListFields({ list }: { list?: (typeof tempLists)[0] }) {
   return (
     <>
       <label>
@@ -96,6 +108,7 @@ function ListFields() {
           minLength={2}
           maxLength={80}
           placeholder="My list"
+          defaultValue={list?.name}
           required
         />
       </label>
@@ -103,7 +116,7 @@ function ListFields() {
       <label>
         <small>Note</small>
 
-        <textarea rows={6} maxLength={320} />
+        <textarea rows={6} maxLength={320} defaultValue={list?.note} />
       </label>
     </>
   );
@@ -131,12 +144,24 @@ function CurrentList({ currentListId }: { currentListId?: string }) {
             Add food <IconPlus size={16} />
           </button>
 
-          <button aria-label="List options" className={outlineBtn}>
-            <IconDots size={16} />
-          </button>
+          <ListActionMenu>
+            <EditListAction currentListId={currentListId}>
+              <DropdownItem className={ghostBtn} asChild>
+                <DialogTrigger>
+                  Edit list <IconPencil size={16} />
+                </DialogTrigger>
+              </DropdownItem>
+            </EditListAction>
+
+            <DropdownItem className={ghostBtn} asChild>
+              <button>
+                Delete list <IconTrash size={16} />
+              </button>
+            </DropdownItem>
+          </ListActionMenu>
         </div>
 
-        <ul className={styles.foodActions}>
+        <ol className={styles.foodActions}>
           {foods.map((food) => (
             <li key={food.id} className={styles.foodAction}>
               <button className={ghostBtn}>
@@ -171,8 +196,55 @@ function CurrentList({ currentListId }: { currentListId?: string }) {
               </button>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
     </main>
+  );
+}
+
+function ListActionMenu({ children }: { children: React.ReactNode }) {
+  return (
+    <Dropdown>
+      <DropdownTrigger
+        aria-label="List action menu"
+        className={styles.listActionTrigger}
+      >
+        <IconDots size={16} />
+      </DropdownTrigger>
+
+      <DropdownContent>{children}</DropdownContent>
+    </Dropdown>
+  );
+}
+
+function EditListAction({
+  currentListId,
+  children,
+}: {
+  currentListId: string;
+  children: React.ReactNode;
+}) {
+  const list = tempLists.filter(({ id }) => id === currentListId)[0];
+
+  return (
+    <Dialog>
+      {children}
+
+      <DialogContent>
+        <DialogTitle>Edit list</DialogTitle>
+
+        <form>
+          <ListFields list={list} />
+
+          <div form-container="actions">
+            <DialogClose className={outlineBtn}>Cancel</DialogClose>
+
+            <button type="submit" className={secondaryBtn}>
+              Update
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
