@@ -36,11 +36,18 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
 
-export default function App({
-  searchParams,
-}: {
+type Props = {
   searchParams?: { id?: string };
-}) {
+};
+
+export async function generateMetadata({ searchParams }: Props) {
+  const list = tempLists.filter(({ id }) => id === searchParams?.id)[0];
+  if (!list) return;
+
+  return { title: list.name };
+}
+
+export default function App({ searchParams }: Props) {
   return (
     <div className={styles.root}>
       <aside
@@ -59,7 +66,7 @@ export default function App({
           {tempLists.map((list) => (
             <Link
               key={list.id}
-              href={`/?id=${list.id}`}
+              href={`/app?id=${list.id}`}
               className={
                 list.id !== searchParams?.id ? ghostBtn : styles.activeList
               }
