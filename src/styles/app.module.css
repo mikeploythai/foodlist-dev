@@ -35,6 +35,28 @@
   white-space: nowrap;
 }
 
+.error,
+.empty {
+  display: grid;
+  justify-items: flex-start;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 2rem;
+  border: 1px dashed;
+  border-radius: 1rem;
+}
+
+.error {
+  background-color: rgba(var(--red-rgb) / 25%);
+  border-color: var(--red);
+}
+
+.empty {
+  background-color: var(--transparent-gray);
+  border-color: var(--gray);
+  font-weight: 500;
+}
+
 /* Sidebar */
 .sidebar h2 {
   font-size: 2.027rem;
@@ -53,8 +75,8 @@
   display: none;
 }
 
-/* List */
-.list {
+/* Current List */
+.listContainer {
   max-width: 48rem;
   margin: 0 auto;
 }
@@ -125,6 +147,10 @@
   .list {
     height: 100vh;
     overflow-y: scroll;
+  }
+
+  .actionBar {
+    top: -2rem;
   }
 
   /* Sidebar */

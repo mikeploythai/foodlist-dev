@@ -19,7 +19,8 @@ import {
   PRICE_UNITS,
   TEXTAREA_ROWS,
 } from "@/utils/constants";
-import { tempFoods, tempLists } from "@/utils/temp-db";
+import type { Tables } from "@/utils/supabase/types";
+import { tempLists } from "@/utils/temp-db";
 import { IconPlus } from "@tabler/icons-react";
 import clsx from "clsx";
 import { useOptimistic, useState, useTransition } from "react";
@@ -67,7 +68,7 @@ export function EditFood({
   food,
   children,
 }: {
-  food: (typeof tempFoods)[0];
+  food: Tables<"foods">;
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -127,8 +128,8 @@ export function DeleteFood({
           </AlertDialogTitle>
 
           <AlertDialogDescription>
-            This food will be <strong>permanently deleted</strong> from this
-            list and our database. You won&apos;t be able to recover it after.
+            This food will be <strong>permanently deleted</strong> from the list
+            and our database. You won&apos;t be able to recover it after.
           </AlertDialogDescription>
         </hgroup>
 
@@ -157,7 +158,10 @@ export function FoodQuantity({ quantity }: { quantity: number }) {
 
   return (
     <form action={handleAction}>
-      <button disabled={isPending} className={foodQuantity}>
+      <button
+        disabled={isPending || optimisticQuantity === 0}
+        className={foodQuantity}
+      >
         <strong
           className={clsx(
             mono.className,
@@ -176,7 +180,7 @@ function FormFields({
   food,
   isPending,
 }: {
-  food?: (typeof tempFoods)[0];
+  food?: Tables<"foods">;
   isPending: boolean;
 }) {
   return (
@@ -248,7 +252,7 @@ function FormFields({
             min={MIN_PRICE}
             max={MAX_PRICE}
             step={0.01}
-            defaultValue={food?.price}
+            defaultValue={food?.price ?? undefined}
             disabled={isPending}
           />
         </label>

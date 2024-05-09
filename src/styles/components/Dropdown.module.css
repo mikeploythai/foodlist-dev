@@ -1,6 +1,6 @@
 .content {
   display: grid;
-  margin: 1rem;
+  margin: 0.5rem 1rem;
   padding: 0.5rem;
   background-color: var(--black);
   border: 1px solid var(--gray);

@@ -7,7 +7,7 @@ import {
   MIN_INPUT_LENGTH,
   TEXTAREA_ROWS,
 } from "@/utils/constants";
-import { tempLists } from "@/utils/temp-db";
+import type { Tables } from "@/utils/supabase/types";
 import { IconPlus } from "@tabler/icons-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -54,7 +54,7 @@ export function EditList({
   list,
   children,
 }: {
-  list: (typeof tempLists)[0];
+  list: Tables<"lists">;
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -134,7 +134,7 @@ function FormFields({
   list,
   isPending,
 }: {
-  list?: (typeof tempLists)[0];
+  list?: Tables<"lists">;
   isPending: boolean;
 }) {
   return (

@@ -91,3 +91,9 @@ export const tempFoods = [
     price_unit: "per ounce",
   },
 ];
+
+export const getTempList = (listId: string) =>
+  tempLists.filter(({ id }) => id === listId)[0];
+
+export const getTempFoods = (listId: string) =>
+  tempFoods.filter(({ list_id }) => list_id === listId);

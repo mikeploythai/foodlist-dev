@@ -19,11 +19,12 @@ import {
   FoodQuantity,
 } from "@/components/FoodActions";
 import { CreateList, DeleteList, EditList } from "@/components/ListActions";
+import ReloadPage from "@/components/ReloadPage";
 import styles from "@/styles/app.module.css";
 import { ghostBtn, outlineBtn } from "@/styles/components/Button.module.css";
 import { mono } from "@/styles/fonts";
-import { getUser } from "@/utils/supabase/server";
-import { tempFoods, tempLists } from "@/utils/temp-db";
+import { getFoods, getList, getLists, getUser } from "@/utils/supabase/server";
+import type { Tables } from "@/utils/supabase/types";
 import {
   IconBuildingStore,
   IconCashBanknote,
@@ -42,8 +43,10 @@ type Props = {
 };
 
 export async function generateMetadata({ searchParams }: Props) {
-  const list = tempLists.filter(({ id }) => id === searchParams?.id)[0];
-  if (!list) return;
+  if (!searchParams?.id) return;
+
+  const { data: list, error } = await getList(searchParams?.id);
+  if (error || !list) return;
 
   return { title: list.name };
 }
@@ -53,115 +56,219 @@ export default async function App({ searchParams }: Props) {
 
   return (
     <div className={styles.root}>
-      <aside
-        className={clsx(
-          styles.sidebar,
-          !!searchParams?.id && styles.hideSidebar
-        )}
-      >
-        <h2>My lists</h2>
-
-        <div className={styles.actionBar}>
-          <CreateList />
-        </div>
-
-        <nav>
-          {tempLists.map((list) => (
-            <Link
-              key={list.id}
-              href={`/app?id=${list.id}`}
-              className={
-                list.id !== searchParams?.id ? ghostBtn : styles.activeList
-              }
-            >
-              <span className={styles.truncate}>{list.name}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar listId={searchParams?.id}>
+        <SidebarNav listId={searchParams?.id} />
+      </Sidebar>
 
       <List listId={searchParams?.id} />
     </div>
   );
 }
 
-function List({ listId }: { listId?: string }) {
+// Sidebar
+type SidebarProps = {
+  listId?: string;
+  children: React.ReactNode;
+};
+
+async function Sidebar({ listId, children }: SidebarProps) {
+  return (
+    <aside className={clsx(styles.sidebar, !!listId && styles.hideSidebar)}>
+      <h2>My lists</h2>
+
+      <div className={styles.actionBar}>
+        <CreateList />
+      </div>
+
+      {children}
+    </aside>
+  );
+}
+
+async function SidebarNav({ listId }: { listId?: string }) {
+  const { data: lists, error } = await getLists();
+
+  if (error) {
+    return (
+      <div className={styles.error}>
+        <hgroup>
+          <h3>Error</h3>
+
+          <p>
+            <small>{error.message}</small>
+          </p>
+        </hgroup>
+
+        <ReloadPage />
+      </div>
+    );
+  }
+
+  if (!lists?.length) {
+    return (
+      <div className={styles.empty}>
+        <hgroup>
+          <h3>You have no lists... yet!</h3>
+
+          <p>
+            <small>Make a list and start managing your food with ease 😎</small>
+          </p>
+        </hgroup>
+      </div>
+    );
+  }
+
+  return (
+    <nav>
+      {lists.map((list) => (
+        <Link
+          key={list.id}
+          href={`/app?id=${list.id}`}
+          className={list.id !== listId ? ghostBtn : styles.activeList}
+        >
+          <span className={styles.truncate}>{list.name}</span>
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+// Current List
+async function List({ listId }: { listId?: string }) {
   if (!listId) return;
 
-  const list = tempLists.filter(({ id }) => id === listId)[0];
-  const foods = tempFoods.filter(({ list_id }) => list_id === listId);
+  const { data: list, error } = await getList(listId);
+
+  if (error) {
+    return (
+      <main key={listId} className={styles.list}>
+        <div className={styles.error}>
+          <hgroup>
+            <h3>Error</h3>
+
+            <p>
+              <small>{error.message}</small>
+            </p>
+          </hgroup>
+
+          <ReloadPage />
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main key={listId} className={styles.list}>
-      <hgroup>
-        <h1>{list.name}</h1>
-        {!!list.note && <p>{list.note}</p>}
-      </hgroup>
+      <div className={styles.listContainer}>
+        <hgroup>
+          <h1>{list.name}</h1>
+          {!!list.note && <p>{list.note}</p>}
+        </hgroup>
 
-      <div className={styles.actionBar}>
-        <CreateFood />
+        <div className={styles.actionBar}>
+          <CreateFood />
 
-        <Dropdown>
-          <DropdownTrigger aria-label="List menu" className={outlineBtn}>
-            <IconDots size={16} />
-          </DropdownTrigger>
+          <Dropdown>
+            <DropdownTrigger aria-label="List menu" className={outlineBtn}>
+              <IconDots size={16} />
+            </DropdownTrigger>
 
-          <DropdownContent>
-            <EditList list={list}>
-              <DropdownItem className={ghostBtn} asChild>
-                <DialogTrigger>
-                  Edit list <IconPencil size={16} />
-                </DialogTrigger>
-              </DropdownItem>
-            </EditList>
+            <DropdownContent>
+              <EditList list={list}>
+                <DropdownItem className={ghostBtn} asChild>
+                  <DialogTrigger>
+                    Edit list <IconPencil size={16} />
+                  </DialogTrigger>
+                </DropdownItem>
+              </EditList>
 
-            <DeleteList listId={list.id} listName={list.name}>
-              <DropdownItem className={ghostBtn} asChild>
-                <AlertDialogTrigger>
-                  Delete list <IconTrash size={16} />
-                </AlertDialogTrigger>
-              </DropdownItem>
-            </DeleteList>
-          </DropdownContent>
-        </Dropdown>
+              <DeleteList listId={list.id} listName={list.name}>
+                <DropdownItem className={ghostBtn} asChild>
+                  <AlertDialogTrigger>
+                    Delete list <IconTrash size={16} />
+                  </AlertDialogTrigger>
+                </DropdownItem>
+              </DeleteList>
+            </DropdownContent>
+          </Dropdown>
+        </div>
+
+        <FoodList listId={listId} />
       </div>
-
-      <ol className={styles.foodList}>
-        {foods.map((food) => (
-          <li key={food.id}>
-            <FoodQuantity quantity={food.quantity} />
-            <ViewFood food={food} />
-
-            <Dropdown>
-              <DropdownTrigger
-                aria-label="Food actions dropdown"
-                className={ghostBtn}
-              >
-                <IconDots size={16} />
-              </DropdownTrigger>
-
-              <DropdownContent>
-                <EditFood food={food}>
-                  <DropdownItem className={ghostBtn} asChild>
-                    <DialogTrigger>
-                      Edit food <IconPencil size={16} />
-                    </DialogTrigger>
-                  </DropdownItem>
-                </EditFood>
-
-                <DeleteFood foodId={food.id} foodName={food.name}>
-                  <DropdownItem className={ghostBtn} asChild>
-                    <AlertDialogTrigger>
-                      Delete food <IconTrash size={16} />
-                    </AlertDialogTrigger>
-                  </DropdownItem>
-                </DeleteFood>
-              </DropdownContent>
-            </Dropdown>
-          </li>
-        ))}
-      </ol>
     </main>
+  );
+}
+
+// Food List
+async function FoodList({ listId }: { listId: string }) {
+  const { data: foods, error } = await getFoods(listId);
+
+  if (error) {
+    return (
+      <div className={styles.error}>
+        <hgroup>
+          <h3>Error</h3>
+
+          <p>
+            <small>{error.message}</small>
+          </p>
+        </hgroup>
+
+        <ReloadPage />
+      </div>
+    );
+  }
+
+  if (!foods?.length) {
+    return (
+      <div className={styles.empty}>
+        <hgroup>
+          <h3>Your list is empty 🥺</h3>
+
+          <p>
+            <small>Let&apos;s change that by adding some food!</small>
+          </p>
+        </hgroup>
+      </div>
+    );
+  }
+
+  return (
+    <ol className={styles.foodList}>
+      {foods.map((food) => (
+        <li key={food.id}>
+          <FoodQuantity quantity={food.quantity} />
+          <ViewFood food={food} />
+
+          <Dropdown>
+            <DropdownTrigger
+              aria-label="Food actions dropdown"
+              className={ghostBtn}
+            >
+              <IconDots size={16} />
+            </DropdownTrigger>
+
+            <DropdownContent>
+              <EditFood food={food}>
+                <DropdownItem className={ghostBtn} asChild>
+                  <DialogTrigger>
+                    Edit food <IconPencil size={16} />
+                  </DialogTrigger>
+                </DropdownItem>
+              </EditFood>
+
+              <DeleteFood foodId={food.id} foodName={food.name}>
+                <DropdownItem className={ghostBtn} asChild>
+                  <AlertDialogTrigger>
+                    Delete food <IconTrash size={16} />
+                  </AlertDialogTrigger>
+                </DropdownItem>
+              </DeleteFood>
+            </DropdownContent>
+          </Dropdown>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -174,7 +281,7 @@ const formatCurrency = (value: number) =>
     currency: "USD",
   }).format(value);
 
-function ViewFood({ food }: { food: (typeof tempFoods)[0] }) {
+function ViewFood({ food }: { food: Tables<"foods"> }) {
   const details = [
     {
       Icon: IconCashBanknote,
@@ -184,7 +291,7 @@ function ViewFood({ food }: { food: (typeof tempFoods)[0] }) {
     },
     {
       Icon: IconBuildingStore,
-      value: food.market ?? "N/A",
+      value: food.market.length ? food.market : "N/A",
     },
     {
       Icon: IconClock,

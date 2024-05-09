@@ -3,11 +3,12 @@ import "server-only";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import type { Database } from "./types";
 
 export function createClient() {
   const cookieStore = cookies();
 
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -43,5 +44,32 @@ export async function getUser() {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) redirect("/");
 
-  return { user: data.user };
+  return { supabase, user: data.user };
+}
+
+export async function getLists() {
+  const { supabase, user } = await getUser();
+
+  return await supabase
+    .from("lists")
+    .select()
+    .eq("owner_id", user.id)
+    .order("name");
+}
+
+export async function getList(listId: string) {
+  const supabase = createClient();
+
+  return await supabase.from("lists").select().eq("id", listId).single();
+}
+
+export async function getFoods(listId: string) {
+  const supabase = createClient();
+
+  return await supabase
+    .from("foods")
+    .select()
+    .eq("list_id", listId)
+    .order("name")
+    .order("quantity", { ascending: false });
 }
