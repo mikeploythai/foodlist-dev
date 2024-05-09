@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  foodQuantity,
-  foodQuantityEmpty,
-  foodQuantityLow,
-} from "@/styles/app.module.css";
-import { primaryBtn } from "@/styles/components/Button.module.css";
-import { columns } from "@/styles/components/Dialog.module.css";
+import food from "@/styles/app.module.css";
+import button from "@/styles/components/Button.module.css";
+import dialog from "@/styles/components/Dialog.module.css";
 import { mono } from "@/styles/fonts";
 import {
   createFood,
@@ -76,7 +72,7 @@ export function CreateFood({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className={primaryBtn}>
+      <DialogTrigger className={button.primaryBtn}>
         {label} <IconPlus size={16} />
       </DialogTrigger>
 
@@ -182,7 +178,7 @@ export function DeleteFood({
       <AlertDialogContent>
         <hgroup>
           <AlertDialogTitle>
-            Are you sure you want to delete "{foodName}"?
+            Are you sure you want to delete &quot;{foodName}&quot;?
           </AlertDialogTitle>
 
           <AlertDialogDescription>
@@ -238,13 +234,13 @@ export function FoodQuantity({
     <form action={handleAction}>
       <button
         disabled={isPending || optimisticQuantity === 0}
-        className={foodQuantity}
+        className={food.foodQuantity}
       >
         <strong
           className={clsx(
             mono.className,
-            optimisticQuantity <= 5 && foodQuantityLow,
-            optimisticQuantity <= 1 && foodQuantityEmpty
+            optimisticQuantity <= 5 && food.foodQuantityLow,
+            optimisticQuantity <= 1 && food.foodQuantityEmpty
           )}
         >
           {String(optimisticQuantity).padStart(2)}x
@@ -317,7 +313,7 @@ function FormFields({
         />
       </label>
 
-      <div className={columns}>
+      <div className={dialog.columns}>
         <label>
           <small>Price (USD)</small>
           <input

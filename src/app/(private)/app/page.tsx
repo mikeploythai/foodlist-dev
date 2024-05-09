@@ -22,7 +22,7 @@ import { CreateList, DeleteList, EditList } from "@/components/ListActions";
 import ReloadPage from "@/components/ReloadPage";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/Tooltip";
 import styles from "@/styles/app.module.css";
-import { ghostBtn, outlineBtn } from "@/styles/components/Button.module.css";
+import button from "@/styles/components/Button.module.css";
 import { mono } from "@/styles/fonts";
 import { getFoods, getList, getLists, getUser } from "@/utils/supabase/server";
 import type { Tables } from "@/utils/supabase/types";
@@ -129,7 +129,7 @@ async function SidebarNav({ listId }: { listId?: string }) {
         <Link
           key={list.id}
           href={`/app?id=${list.id}`}
-          className={list.id !== listId ? ghostBtn : styles.activeList}
+          className={list.id !== listId ? button.ghostBtn : styles.activeList}
         >
           <span className={styles.truncate}>{list.name}</span>
         </Link>
@@ -158,13 +158,16 @@ async function List({ listId }: { listId?: string }) {
           <CreateFood listId={list.id} listName={list.name} />
 
           <Dropdown>
-            <DropdownTrigger aria-label="List menu" className={outlineBtn}>
+            <DropdownTrigger
+              aria-label="List menu"
+              className={button.outlineBtn}
+            >
               <IconDots size={16} />
             </DropdownTrigger>
 
             <DropdownContent>
               <EditList list={list}>
-                <DropdownItem className={ghostBtn} asChild>
+                <DropdownItem className={button.ghostBtn} asChild>
                   <DialogTrigger>
                     Edit list <IconPencil size={16} />
                   </DialogTrigger>
@@ -172,7 +175,7 @@ async function List({ listId }: { listId?: string }) {
               </EditList>
 
               <DeleteList listId={list.id} listName={list.name}>
-                <DropdownItem className={ghostBtn} asChild>
+                <DropdownItem className={button.ghostBtn} asChild>
                   <AlertDialogTrigger>
                     Delete list <IconTrash size={16} />
                   </AlertDialogTrigger>
@@ -242,14 +245,14 @@ async function FoodList({
           <Dropdown>
             <DropdownTrigger
               aria-label="Food actions dropdown"
-              className={ghostBtn}
+              className={button.ghostBtn}
             >
               <IconDots size={16} />
             </DropdownTrigger>
 
             <DropdownContent>
               <EditFood food={food} listName={listName}>
-                <DropdownItem className={ghostBtn} asChild>
+                <DropdownItem className={button.ghostBtn} asChild>
                   <DialogTrigger>
                     Edit food <IconPencil size={16} />
                   </DialogTrigger>
@@ -262,7 +265,7 @@ async function FoodList({
                 listId={listId}
                 listName={listName}
               >
-                <DropdownItem className={ghostBtn} asChild>
+                <DropdownItem className={button.ghostBtn} asChild>
                   <AlertDialogTrigger>
                     Delete food <IconTrash size={16} />
                   </AlertDialogTrigger>

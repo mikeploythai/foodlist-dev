@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  dangerBtn,
-  outlineBtn,
-  secondaryBtn,
-} from "@/styles/components/Button.module.css";
-import { columns } from "@/styles/components/Dialog.module.css";
+import button from "@/styles/components/Button.module.css";
+import dialog from "@/styles/components/Dialog.module.css";
 import { AlertDialogAction, AlertDialogCancel } from "./AlertDialog";
 import { DialogClose } from "./Dialog";
 
@@ -28,20 +24,24 @@ export default function Form({
     <form action={handleAction}>
       {children}
 
-      <div className={columns}>
-        <CloseButton disabled={isPending} className={outlineBtn}>
+      <div className={dialog.columns}>
+        <CloseButton disabled={isPending} className={button.outlineBtn}>
           Cancel
         </CloseButton>
 
         {action !== "Delete" ? (
-          <button type="submit" disabled={isPending} className={secondaryBtn}>
+          <button
+            type="submit"
+            disabled={isPending}
+            className={button.secondaryBtn}
+          >
             {action}
           </button>
         ) : (
           <AlertDialogAction
             type="submit"
             disabled={isPending}
-            className={dangerBtn}
+            className={button.dangerBtn}
           >
             {action}
           </AlertDialogAction>

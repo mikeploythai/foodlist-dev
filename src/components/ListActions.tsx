@@ -1,6 +1,6 @@
 "use client";
 
-import { secondaryBtn } from "@/styles/components/Button.module.css";
+import button from "@/styles/components/Button.module.css";
 import { createList, deleteList, updateList } from "@/utils/actions";
 import {
   MAX_INPUT_LENGTH,
@@ -51,7 +51,7 @@ export function CreateList() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className={secondaryBtn}>
+      <DialogTrigger className={button.secondaryBtn}>
         {label} <IconPlus size={16} />
       </DialogTrigger>
 
@@ -151,7 +151,7 @@ export function DeleteList({
       <AlertDialogContent>
         <hgroup>
           <AlertDialogTitle>
-            Are you sure you want to delete "{listName}"?
+            Are you sure you want to delete &quot;{listName}&quot;?
           </AlertDialogTitle>
 
           <AlertDialogDescription>
