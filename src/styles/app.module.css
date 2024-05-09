@@ -69,7 +69,7 @@
 
 .sidebar nav a {
   overflow: hidden;
-  animation-name: slide-up-short, fade-in;
+  animation-name: fade-in;
 }
 
 .hideSidebar {
@@ -94,6 +94,7 @@
   display: flex;
   border: 1px solid var(--gray);
   border-radius: var(--rounded);
+  animation: fade-in var(--ease);
 }
 
 .foodList li button:last-of-type {
@@ -188,15 +189,6 @@
 @keyframes slide-up {
   from {
     transform: translateY(1rem);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-up-short {
-  from {
-    transform: translateY(0.5rem);
   }
   to {
     transform: translateY(0);

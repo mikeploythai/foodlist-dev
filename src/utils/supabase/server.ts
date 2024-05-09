@@ -69,7 +69,7 @@ export async function getFoods(listId: string) {
   return await supabase
     .from("foods")
     .select()
-    .eq("list_id", listId)
+    .eq("listId", listId)
     .order("name")
     .order("quantity", { ascending: false });
 }

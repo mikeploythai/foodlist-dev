@@ -5,6 +5,7 @@ import { createList, deleteList, updateList } from "@/utils/actions";
 import {
   MAX_INPUT_LENGTH,
   MAX_TEXTAREA_LENGTH,
+  MIN_INPUT_LENGTH,
   TEXTAREA_ROWS,
 } from "@/utils/constants";
 import type { Tables } from "@/utils/supabase/types";
@@ -184,10 +185,12 @@ function FormFields({
         <input
           type="text"
           name="name"
+          minLength={MIN_INPUT_LENGTH}
           maxLength={MAX_INPUT_LENGTH}
           placeholder="My list"
           defaultValue={list?.name}
           disabled={isPending}
+          required
         />
       </label>
 

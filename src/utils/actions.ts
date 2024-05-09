@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient, getUser } from "./supabase/server";
-import { validateList } from "./validators";
+import { validateFood, validateList } from "./validators";
 
 // Auth
 export async function signIn() {
@@ -78,4 +78,78 @@ export async function deleteList(listId: string) {
   if (error) return { error: error.message };
 
   redirect("/app");
+}
+
+// Food
+export async function createFood(listId: string, data: unknown) {
+  const { supabase } = await getUser();
+  const validated = validateFood.safeParse(data);
+
+  if (!validated.success) {
+    let error = "";
+    for (const { message } of validated.error.issues) error += `${message}. `;
+    return { error };
+  }
+
+  const { data: food, error } = await supabase
+    .from("foods")
+    .insert({ ...validated.data, listId })
+    .select("name")
+    .single();
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/app?id=${listId}`);
+  return { foodName: food.name };
+}
+
+export async function updateFood(
+  foodId: string,
+  listId: string,
+  data: unknown
+) {
+  const { supabase } = await getUser();
+  const validated = validateFood.safeParse(data);
+
+  if (!validated.success) {
+    let error = "";
+    for (const { message } of validated.error.issues) error += `${message}. `;
+    return { error };
+  }
+
+  const { data: food, error } = await supabase
+    .from("foods")
+    .update({ ...validated.data })
+    .eq("id", foodId)
+    .select("name")
+    .single();
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/app?id=${listId}`);
+  return { foodName: food.name };
+}
+
+export async function deleteFood(foodId: string, listId: string) {
+  const { supabase } = await getUser();
+  const { error } = await supabase.from("foods").delete().eq("id", foodId);
+  if (error) return { error: error.message };
+
+  revalidatePath(`/app?id=${listId}`);
+}
+
+export async function decreaseQuantity(
+  newQuantity: number,
+  foodId: string,
+  listId: string
+) {
+  const { supabase } = await getUser();
+  const { error } = await supabase
+    .from("foods")
+    .update({ quantity: newQuantity })
+    .eq("id", foodId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/app?id=${listId}`);
 }

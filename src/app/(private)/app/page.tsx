@@ -38,6 +38,7 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 dayjs.extend(relativeTime);
 
@@ -143,23 +144,7 @@ async function List({ listId }: { listId?: string }) {
 
   const { data: list, error } = await getList(listId);
 
-  if (error) {
-    return (
-      <main key={listId} className={styles.list}>
-        <div className={styles.error}>
-          <hgroup>
-            <h3>Error</h3>
-
-            <p>
-              <small>{error.message}</small>
-            </p>
-          </hgroup>
-
-          <ReloadPage />
-        </div>
-      </main>
-    );
-  }
+  if (error) notFound();
 
   return (
     <main key={listId} className={styles.list}>
@@ -170,7 +155,7 @@ async function List({ listId }: { listId?: string }) {
         </hgroup>
 
         <div className={styles.actionBar}>
-          <CreateFood />
+          <CreateFood listId={list.id} listName={list.name} />
 
           <Dropdown>
             <DropdownTrigger aria-label="List menu" className={outlineBtn}>
@@ -197,14 +182,20 @@ async function List({ listId }: { listId?: string }) {
           </Dropdown>
         </div>
 
-        <FoodList listId={listId} />
+        <FoodList listId={listId} listName={list.name} />
       </div>
     </main>
   );
 }
 
 // Food List
-async function FoodList({ listId }: { listId: string }) {
+async function FoodList({
+  listId,
+  listName,
+}: {
+  listId: string;
+  listName: string;
+}) {
   const { data: foods, error } = await getFoods(listId);
 
   if (error) {
@@ -241,7 +232,11 @@ async function FoodList({ listId }: { listId: string }) {
     <ol className={styles.foodList}>
       {foods.map((food) => (
         <li key={food.id}>
-          <FoodQuantity quantity={food.quantity} />
+          <FoodQuantity
+            quantity={food.quantity}
+            foodId={food.id}
+            listId={listId}
+          />
           <ViewFood food={food} />
 
           <Dropdown>
@@ -253,7 +248,7 @@ async function FoodList({ listId }: { listId: string }) {
             </DropdownTrigger>
 
             <DropdownContent>
-              <EditFood food={food}>
+              <EditFood food={food} listName={listName}>
                 <DropdownItem className={ghostBtn} asChild>
                   <DialogTrigger>
                     Edit food <IconPencil size={16} />
@@ -261,7 +256,12 @@ async function FoodList({ listId }: { listId: string }) {
                 </DropdownItem>
               </EditFood>
 
-              <DeleteFood foodId={food.id} foodName={food.name}>
+              <DeleteFood
+                foodId={food.id}
+                foodName={food.name}
+                listId={listId}
+                listName={listName}
+              >
                 <DropdownItem className={ghostBtn} asChild>
                   <AlertDialogTrigger>
                     Delete food <IconTrash size={16} />

@@ -13,7 +13,7 @@ export type Database = {
         Row: {
           expiration: string
           id: string
-          list_id: string
+          listId: string
           market: string
           name: string
           note: string
@@ -24,7 +24,7 @@ export type Database = {
         Insert: {
           expiration: string
           id?: string
-          list_id: string
+          listId: string
           market: string
           name: string
           note: string
@@ -35,7 +35,7 @@ export type Database = {
         Update: {
           expiration?: string
           id?: string
-          list_id?: string
+          listId?: string
           market?: string
           name?: string
           note?: string
@@ -45,8 +45,8 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "food_list_id_fkey"
-            columns: ["list_id"]
+            foreignKeyName: "foods_listId_fkey"
+            columns: ["listId"]
             isOneToOne: false
             referencedRelation: "lists"
             referencedColumns: ["id"]

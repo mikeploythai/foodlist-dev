@@ -9,6 +9,12 @@ import { primaryBtn } from "@/styles/components/Button.module.css";
 import { columns } from "@/styles/components/Dialog.module.css";
 import { mono } from "@/styles/fonts";
 import {
+  createFood,
+  decreaseQuantity,
+  deleteFood,
+  updateFood,
+} from "@/utils/actions";
+import {
   MAX_INPUT_LENGTH,
   MAX_PRICE,
   MAX_QUANTITY,
@@ -20,7 +26,7 @@ import {
   TEXTAREA_ROWS,
 } from "@/utils/constants";
 import type { Tables } from "@/utils/supabase/types";
-import { tempLists } from "@/utils/temp-db";
+import { validateFood } from "@/utils/validators";
 import { IconPlus } from "@tabler/icons-react";
 import clsx from "clsx";
 import { useOptimistic, useState, useTransition } from "react";
@@ -34,7 +40,13 @@ import {
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./Dialog";
 import Form from "./Form";
 
-export function CreateFood() {
+export function CreateFood({
+  listId,
+  listName,
+}: {
+  listId: string;
+  listName: string;
+}) {
   const label = "Add food";
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -42,7 +54,22 @@ export function CreateFood() {
   function handleAction(formData: FormData) {
     startTransition(async () => {
       const data = Object.fromEntries(formData);
-      toast(JSON.stringify(data, null, 2));
+      const validated = validateFood.safeParse(data);
+
+      if (!validated.success) {
+        for (const { message: error } of validated.error.issues)
+          toast.error(error);
+        return;
+      }
+
+      const handleCreateFood = createFood.bind(null, listId);
+      const res = await handleCreateFood(validated.data);
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      toast.success(`Successfully created "${res.foodName}" in "${listName}"`);
       setIsOpen(false);
     });
   }
@@ -66,9 +93,11 @@ export function CreateFood() {
 
 export function EditFood({
   food,
+  listName,
   children,
 }: {
   food: Tables<"foods">;
+  listName: string;
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +106,25 @@ export function EditFood({
   function handleAction(formData: FormData) {
     startTransition(async () => {
       const data = Object.fromEntries(formData);
-      toast(JSON.stringify(data, null, 2));
+
+      // Check if data is different from og data later
+
+      const validated = validateFood.safeParse(data);
+
+      if (!validated.success) {
+        for (const { message: error } of validated.error.issues)
+          toast.error(error);
+        return;
+      }
+
+      const handleUpdateFood = updateFood.bind(null, food.id, food.listId);
+      const res = await handleUpdateFood(validated.data);
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      toast.success(`Successfully updated "${res.foodName}" in "${listName}"`);
       setIsOpen(false);
     });
   }
@@ -100,10 +147,14 @@ export function EditFood({
 export function DeleteFood({
   foodId,
   foodName,
+  listId,
+  listName,
   children,
 }: {
   foodId: string;
   foodName: string;
+  listId: string;
+  listName: string;
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -111,8 +162,15 @@ export function DeleteFood({
 
   function handleAction(formData: FormData) {
     startTransition(async () => {
-      const data = Object.fromEntries(formData);
-      toast(JSON.stringify(data, null, 2));
+      const handleDeleteFood = deleteFood.bind(null, foodId, listId);
+      const res = await handleDeleteFood();
+
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      toast.success(`Successfully deleted "${foodName}" from "${listName}"`);
       setIsOpen(false);
     });
   }
@@ -143,7 +201,15 @@ export function DeleteFood({
   );
 }
 
-export function FoodQuantity({ quantity }: { quantity: number }) {
+export function FoodQuantity({
+  quantity,
+  foodId,
+  listId,
+}: {
+  quantity: number;
+  foodId: string;
+  listId: string;
+}) {
   const [isPending, startTransition] = useTransition();
   const [optimisticQuantity, decreaseOptimisticQuantity] = useOptimistic(
     quantity,
@@ -153,6 +219,18 @@ export function FoodQuantity({ quantity }: { quantity: number }) {
   function handleAction() {
     startTransition(async () => {
       decreaseOptimisticQuantity(null);
+      const handleDecreaseQuantity = decreaseQuantity.bind(
+        null,
+        quantity - 1,
+        foodId,
+        listId
+      );
+
+      const res = await handleDecreaseQuantity();
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
     });
   }
 
@@ -199,23 +277,19 @@ function FormFields({
         />
       </label>
 
-      {!!food?.list_id && (
+      {/* {!!food?.listId && (
         <label>
           <small>List</small>
 
-          <select
-            name="list_id"
-            defaultValue={food.list_id}
-            disabled={isPending}
-          >
-            {tempLists.map((list) => (
+          <select name="listId" defaultValue={food.listId} disabled={isPending}>
+            {lists?.map((list) => (
               <option key={list.id} value={list.id}>
                 {list.name}
               </option>
             ))}
           </select>
         </label>
-      )}
+      )} */}
 
       <label>
         <small>Quantity</small>
