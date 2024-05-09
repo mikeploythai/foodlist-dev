@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "@/styles/components/Dialog.module.css";
+import type { OmitClassname } from "@/utils/OmitClassname";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { IconX } from "@tabler/icons-react";
 
@@ -14,7 +15,7 @@ export const DialogDescription = DialogPrimitive.Description;
 
 export const DialogClose = DialogPrimitive.Close;
 
-type DialogContentProps = Omit<DialogPrimitive.DialogContentProps, "className">;
+type DialogContentProps = OmitClassname<DialogPrimitive.DialogContentProps>;
 
 export const DialogContent = ({ children, ...props }: DialogContentProps) => (
   <DialogPrimitive.Portal>

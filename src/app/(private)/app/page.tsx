@@ -20,6 +20,7 @@ import {
 } from "@/components/FoodActions";
 import { CreateList, DeleteList, EditList } from "@/components/ListActions";
 import ReloadPage from "@/components/ReloadPage";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/Tooltip";
 import styles from "@/styles/app.module.css";
 import { ghostBtn, outlineBtn } from "@/styles/components/Button.module.css";
 import { mono } from "@/styles/fonts";
@@ -282,6 +283,10 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 function ViewFood({ food }: { food: Tables<"foods"> }) {
+  const expiredNotice = `${
+    daysUntilExpired(food.expiration) < 0 ? "Expired" : "Expires"
+  } ${dayjs(food.expiration).fromNow()}`;
+
   const details = [
     {
       Icon: IconCashBanknote,
@@ -295,11 +300,7 @@ function ViewFood({ food }: { food: Tables<"foods"> }) {
     },
     {
       Icon: IconClock,
-      value: !!food.expiration
-        ? `${
-            daysUntilExpired(food.expiration) < 0 ? "Expired" : "Expires"
-          } ${dayjs(food.expiration).fromNow()}`
-        : "N/A",
+      value: !!food.expiration ? expiredNotice : "N/A",
     },
   ];
 
@@ -309,13 +310,23 @@ function ViewFood({ food }: { food: Tables<"foods"> }) {
         <span className={styles.truncate}>{food.name}</span>
 
         {!!food.expiration && daysUntilExpired(food.expiration) <= 7 && (
-          <IconClock
-            size={16}
-            className={clsx(
-              styles.foodExpiring,
-              daysUntilExpired(food.expiration) <= 1 && styles.foodExpired
-            )}
-          />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <IconClock
+                size={16}
+                className={clsx(
+                  styles.foodExpiring,
+                  daysUntilExpired(food.expiration) <= 1 && styles.foodExpired
+                )}
+              />
+            </TooltipTrigger>
+
+            <TooltipContent>
+              <p>
+                <small>{expiredNotice}</small>
+              </p>
+            </TooltipContent>
+          </Tooltip>
         )}
       </DialogTrigger>
 

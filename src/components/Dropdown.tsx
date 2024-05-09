@@ -1,16 +1,15 @@
 "use client";
 
 import styles from "@/styles/components/Dropdown.module.css";
+import type { OmitClassname } from "@/utils/OmitClassname";
 import * as DropdownPrimitive from "@radix-ui/react-dropdown-menu";
 
 export const Dropdown = DropdownPrimitive.Root;
 
 export const DropdownTrigger = DropdownPrimitive.Trigger;
 
-type DropdownContentProps = Omit<
-  DropdownPrimitive.DropdownMenuContentProps,
-  "className"
->;
+type DropdownContentProps =
+  OmitClassname<DropdownPrimitive.DropdownMenuContentProps>;
 
 export const DropdownContent = (props: DropdownContentProps) => (
   <DropdownPrimitive.Portal>
