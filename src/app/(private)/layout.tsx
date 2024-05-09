@@ -20,7 +20,12 @@ export default function AppLayout({
     <html lang="en">
       <body className={sans.className}>
         {children}
-        <Toaster theme="dark" style={{ pointerEvents: "auto" }} richColors />
+        <Toaster
+          theme="dark"
+          toastOptions={{ duration: 6000 }}
+          style={{ pointerEvents: "auto" }}
+          richColors
+        />
       </body>
     </html>
   );

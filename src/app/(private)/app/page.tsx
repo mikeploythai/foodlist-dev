@@ -39,6 +39,9 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
 
+dayjs.extend(relativeTime);
+
+// App
 type Props = {
   searchParams?: { id?: string };
 };
@@ -273,19 +276,18 @@ async function FoodList({ listId }: { listId: string }) {
   );
 }
 
-dayjs.extend(relativeTime);
-const daysUntilExpired = (date: string) => dayjs(date).diff(dayjs(), "day");
-
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-
 function ViewFood({ food }: { food: Tables<"foods"> }) {
+  const daysUntilExpired = (date: string) => dayjs(date).diff(dayjs(), "day");
+
   const expiredNotice = `${
     daysUntilExpired(food.expiration) < 0 ? "Expired" : "Expires"
   } ${dayjs(food.expiration).fromNow()}`;
+
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
 
   const details = [
     {

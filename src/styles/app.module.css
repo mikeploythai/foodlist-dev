@@ -8,7 +8,7 @@
 .list {
   width: 100%;
   padding: 2rem 2rem 0;
-  animation: slide-up var(--ease);
+  animation: slide-up var(--ease), fade-in var(--ease);
 }
 
 .actionBar {
@@ -69,6 +69,7 @@
 
 .sidebar nav a {
   overflow: hidden;
+  animation-name: slide-up-short, fade-in;
 }
 
 .hideSidebar {
@@ -175,13 +176,29 @@
   }
 }
 
-@keyframes slide-up {
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(1rem);
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(1rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up-short {
+  from {
+    transform: translateY(0.5rem);
+  }
+  to {
     transform: translateY(0);
   }
 }

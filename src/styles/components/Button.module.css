@@ -10,6 +10,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color var(--ease), opacity var(--ease);
+  animation-duration: 300ms;
 }
 
 .foundation:disabled {

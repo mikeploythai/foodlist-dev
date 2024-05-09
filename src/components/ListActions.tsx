@@ -1,13 +1,14 @@
 "use client";
 
 import { secondaryBtn } from "@/styles/components/Button.module.css";
+import { createList, deleteList, updateList } from "@/utils/actions";
 import {
   MAX_INPUT_LENGTH,
   MAX_TEXTAREA_LENGTH,
-  MIN_INPUT_LENGTH,
   TEXTAREA_ROWS,
 } from "@/utils/constants";
 import type { Tables } from "@/utils/supabase/types";
+import { validateList } from "@/utils/validators";
 import { IconPlus } from "@tabler/icons-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -28,7 +29,21 @@ export function CreateList() {
   function handleAction(formData: FormData) {
     startTransition(async () => {
       const data = Object.fromEntries(formData);
-      toast(JSON.stringify(data, null, 2));
+      const validated = validateList.safeParse(data);
+
+      if (!validated.success) {
+        for (const { message: error } of validated.error.issues)
+          toast.error(error);
+        return;
+      }
+
+      const res = await createList(validated.data);
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      toast.success(`Successfully created "${res.listName}"`);
       setIsOpen(false);
     });
   }
@@ -63,7 +78,25 @@ export function EditList({
   function handleAction(formData: FormData) {
     startTransition(async () => {
       const data = Object.fromEntries(formData);
-      toast(JSON.stringify(data, null, 2));
+
+      // Check if data is different from og data later
+
+      const validated = validateList.safeParse(data);
+
+      if (!validated.success) {
+        for (const { message: error } of validated.error.issues)
+          toast.error(error);
+        return;
+      }
+
+      const handleUpdateList = updateList.bind(null, list.id);
+      const res = await handleUpdateList(validated.data);
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      toast.success(`Successfully updated "${res.listName}"`);
       setIsOpen(false);
     });
   }
@@ -95,10 +128,17 @@ export function DeleteList({
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  function handleAction(formData: FormData) {
+  function handleAction() {
     startTransition(async () => {
-      const data = Object.fromEntries(formData);
-      toast(JSON.stringify(data, null, 2));
+      const handleDeleteList = deleteList.bind(null, listId);
+      const res = await handleDeleteList();
+
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      toast.success(`Successfully deleted "${listName}"`);
       setIsOpen(false);
     });
   }
@@ -144,12 +184,10 @@ function FormFields({
         <input
           type="text"
           name="name"
-          minLength={MIN_INPUT_LENGTH}
           maxLength={MAX_INPUT_LENGTH}
           placeholder="My list"
           defaultValue={list?.name}
           disabled={isPending}
-          required
         />
       </label>
 

@@ -58,13 +58,13 @@ export async function getLists() {
 }
 
 export async function getList(listId: string) {
-  const supabase = createClient();
+  const { supabase } = await getUser();
 
   return await supabase.from("lists").select().eq("id", listId).single();
 }
 
 export async function getFoods(listId: string) {
-  const supabase = createClient();
+  const { supabase } = await getUser();
 
   return await supabase
     .from("foods")
