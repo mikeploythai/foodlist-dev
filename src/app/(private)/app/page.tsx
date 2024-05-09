@@ -22,6 +22,7 @@ import { CreateList, DeleteList, EditList } from "@/components/ListActions";
 import styles from "@/styles/app.module.css";
 import { ghostBtn, outlineBtn } from "@/styles/components/Button.module.css";
 import { mono } from "@/styles/fonts";
+import { getUser } from "@/utils/supabase/server";
 import { tempFoods, tempLists } from "@/utils/temp-db";
 import {
   IconBuildingStore,
@@ -47,7 +48,9 @@ export async function generateMetadata({ searchParams }: Props) {
   return { title: list.name };
 }
 
-export default function App({ searchParams }: Props) {
+export default async function App({ searchParams }: Props) {
+  await getUser();
+
   return (
     <div className={styles.root}>
       <aside
